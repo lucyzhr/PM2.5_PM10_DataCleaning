@@ -1,3 +1,5 @@
+
+
 day <- sprintf("%02.0f",1:31)
 station <- c("atzx",
              "bbxq",
@@ -51,3 +53,27 @@ for (i in day) {
 }
 setwd("F:/Khaki/SPAValidation/RAW/Nov-Dec2012/PM2.5_2012-12/")
 write.csv(stationPM,file="stationPM2.5_201212.csv")
+
+
+##############################################################
+##############################################################
+##############################################################
+######################零值####################################
+##############先改abnormal.bat再改以下########################
+time <- sprintf("%02.0f",0:23)#无需改
+day <- sprintf("%02.0f",15:25)
+station <- "nzg"
+stationFile <- rep(0,length(day)*length(time));dim(stationFile) <- c(length(day),length(time));colnames(stationFile) <- time
+
+for (i in day) {
+  I <- which(day==i)
+  location <- paste("F:/Khaki/SPAValidation/RAW/Nov-Dec2012/PM2.5_2012-12/2012-12/2012-12-",i,"/",sep="")
+  setwd(location)
+  for (j in time) {
+    J <- which(time==j)
+    #stationFile[I,J] <- read.csv(paste(station,j,".csv",sep=""),header=F)
+    stationFile[I,J] <- file.info(paste(station,j,".csv",sep=""))$size
+    } 
+}
+
+
