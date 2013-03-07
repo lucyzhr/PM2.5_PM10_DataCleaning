@@ -1,0 +1,53 @@
+day <- sprintf("%02.0f",1:31)
+station <- c("atzx",
+             "bbxq",
+             "bdj",
+             "bdl",
+             "bl",
+             "cpq",
+             "ddj",
+             "dgc",
+             "ds",
+             "dxq",
+             "fthy",
+             "gc",
+             "gy",
+             "hrq",
+             "llh",
+             "lx",
+             "mtgq",
+             "mysk",
+             "myx",
+             "nzg",
+             "pgq",
+             "RealTime",
+             "tt",
+             "tzq",
+             "wl",
+             "wsxg",
+             "xl",
+             "ydmndj",
+             "yf",
+             "yg",
+             "yld",
+             "yqx",
+             "yz",
+             "zwy"
+)
+stationPM <- rep(0,length(day)*length(station));dim(stationPM) <- c(length(day),length(station));colnames(stationPM) <- station
+for (i in day) {
+  I <- which(day==i)
+  location <- paste("F:/Khaki/SPAValidation/RAW/Nov-Dec2012/PM2.5_2012-12/2012-12/2012-12-",i,"/",sep="")
+  setwd(location)
+  for (j in station) {
+    J <- which(station==j)
+    if (file.info(paste(j,".csv",sep=""))$size>1) {
+      stationValue <- as.matrix(read.csv(paste(j,".csv",sep=""),header=F))
+      stationPM[I,J] <- colMeans(as.matrix(stationValue))*1000
+    } else {
+      stationPM[I,J] <- 0
+    }
+  }
+}
+setwd("F:/Khaki/SPAValidation/RAW/Nov-Dec2012/PM2.5_2012-12/")
+write.csv(stationPM,file="stationPM2.5_201212.csv")
