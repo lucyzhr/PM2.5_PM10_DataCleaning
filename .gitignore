@@ -55,7 +55,7 @@ for (i in day) {
 }
 setwd("F:/Khaki/SPAValidation/RAW/Nov-Dec2012/PM2.5_2012-12/")
 write.csv(stationPM,file="stationPM2.5_201212.csv")
-
+#yqx <-  read.csv(paste(x,"201210",i,y,".csv",sep=""))
 
 ##############################################################
 ##############################################################
@@ -79,3 +79,62 @@ for (i in day) {
 }
 
 
+###############################################################
+###############################################################
+###############################################################
+#######################PM10####################################
+####################先运行names.bat，再运行以下################
+library(XML)
+#a <- readLines("F:/Khaki/SPAValidation/RAW/Nov-Dec2012/PM10 2012-11/2012-11/2012-10-27/2012-10-27/2012-10-27 00-30-15  atzx.html")
+#download.file("file:///F:/Khaki/SPAValidation/RAW/Nov-Dec2012/PM10%202012-11/2012-11/2012-10-27/2012-10-27/2012-10-27%2000-30-15%20%20atzx.html",a,method="curl")
+month <- 12
+day <- sprintf("%02.0f",1:31)
+station <- c("atzx",
+             "bbxq",
+             "bdl",
+             "cpq",
+             "dl",
+             "ds",
+             "dxq",
+             "fthy",
+             "gc",
+             "gy",
+             "hrq",
+             "lx",
+             "mtgq",
+             "mysk",
+             "myx",
+             "nzg",
+             "pgq",
+             "syq",
+             "tt",
+             "tzq",
+             "wl",
+             "wsxg",
+             "yf",
+             "yg",
+             "yqx",
+             "yz",
+             "zwy"
+)
+stationPM10 <- rep(0,length(day)*length(station));dim(stationPM10) <- c(length(day),length(station));colnames(stationPM10) <- station
+for (i in day) {
+  I <- which(day==i)
+  location <- sprintf("F:/Khaki/SPAValidation/RAW/Nov-Dec2012/PM10_2012-%i/2012-%i/2012-%i-%s/",month,month,month,i)
+  setwd(location)
+  for (j in station) {
+    J <- which(station==j)
+    HTML <- readHTMLTable(paste(location,j,".html",sep=""),as.dataframe=T,header=F)
+    PM10Raw <- as.character(HTML[[1]][,4])
+    RawWithBlank <- rep(0,length(PM10Raw))
+    for (k in 1:length(PM10Raw)){
+      RawWithBlank[k] <- nchar(PM10Raw[k])
+    }
+    PM10hr <- PM10Raw[-which(RawWithBlank!=5)]
+    PM10 <- mean(as.numeric(PM10hr))*1000
+    stationPM10[I,J] <- PM10
+  }
+}
+
+setwd(sprintf("F:/Khaki/SPAValidation/RAW/Nov-Dec2012/PM10_2012-%i/",month))
+write.csv(stationPM10,file=sprintf("stationPM10_2012%i.csv",month))
